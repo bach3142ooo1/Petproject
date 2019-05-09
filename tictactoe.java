@@ -131,8 +131,8 @@ public class tictactoe {
 		table.getColumnModel().getColumn(2).setResizable(false);
 		table.getColumnModel().getColumn(3).setResizable(false);
 		table.getColumnModel().getColumn(4).setResizable(false);
-		String[][] checkArr= new String[80][80];
-		for(int row=0; row<80;row++) {
+		String[][] checkArr= new String[26][80];
+		for(int row=0; row<26;row++) {
 			for(int column=0; column<80;column++) {
 				checkArr[row][column]="";
 			}
