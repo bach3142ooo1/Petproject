@@ -1,13 +1,10 @@
 package Swing;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import org.graalvm.compiler.lir.aarch64.AArch64Move.Move;
-
 import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
 
 class MoveException extends RuntimeException{
 	String message;
@@ -17,65 +14,148 @@ class MoveException extends RuntimeException{
 }
 public class tictactoe { 
 	private static JTable table;
+	
 	public static void Movecheck(String[][] checkArr,int r,int c){
-		if(!checkArr[r][c].equals("")) {
+		if(checkArr[r][c].equals("X")) {
+			throw new MoveException("Unvalid Move!");
+		}else if(checkArr[r][c].equals("O")) {
 			throw new MoveException("Unvalid Move!");
 		}
+	
 	}
-	public static void verticalCheck(String[][] arr) {
+	public static boolean verticalCheck(String[][] arr) {
 		int rowNumber= arr.length;
 		int columnNumber= arr[0].length;
+		boolean check=false;
 		for(int c=0;c<columnNumber;c++) {
 			for(int r=0;r<rowNumber-4;r++) {
 				if(arr[r][c].equals("X") && arr[r+1][c].equals("X") && arr[r+2][c].equals("X") && arr[r+3][c].equals("X") && arr[r+4][c].equals("X")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player X win ");
+					check=true;
+					break;
 				}else if(arr[r][c].equals("O") && arr[r+1][c].equals("O") && arr[r+2][c].equals("O") && arr[r+3][c].equals("O") && arr[r+4][c].equals("O")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player O win ");
+					check= true;
+					break;
 				}
 			}
 		}
+		return check;
 	}
-	public static void horizonCheck(String[][] arr) {
+	
+	public static boolean horizonCheck(String[][] arr) {
 		int rowNumber= arr.length;
 		int columnNumber= arr[0].length;
+		boolean check=false;
 		for(int r=0;r< rowNumber;r++) {
 			for(int c=0;c<columnNumber-4;c++) {
 				if(arr[r][c].equals("X") && arr[r][c+1].equals("X") && arr[r][c+2].equals("X") && arr[r][c+3].equals("X") && arr[r][c+4].equals("X")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player X win ");
+					check=true;
+					break;
 				}else if(arr[r][c].equals("O") && arr[r][c+1].equals("O") && arr[r][c+2].equals("O") && arr[r][c+3].equals("O") && arr[r][c+4].equals("O")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player O win ");
+					check=true;
+					break;
 				}
 			}
 		}
+		return check;
 	}
-	public static void diagonalCheck1(String[][] arr) {
+	
+	public static boolean diagonalCheck1(String[][] arr) {
 		int rowNumber= arr.length;
 		int columnNumber= arr[0].length;
+		boolean check=false;
 		for(int r=0;r< rowNumber-4;r++) {
 			for(int c=0;c<columnNumber-4;c++) {
 				if(arr[r][c].equals("X") && arr[r+1][c+1].equals("X") && arr[r+2][c+2].equals("X") && arr[r+3][c+3].equals("X") && arr[r+4][c+4].equals("X")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player X win ");
+					check=true;
+					break;
 				}else if(arr[r][c].equals("O") && arr[r+1][c+1].equals("O") && arr[r+2][c+2].equals("O") && arr[r+3][c+3].equals("O") && arr[r+4][c+4].equals("O")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player O win ");
+					check=true;
+					break;
 				}
 			}
 		}
+		return check;
 	}
-	public static void diagonalCheck2(String[][] arr) {
+	
+	public static boolean diagonalCheck2(String[][] arr) {
 		int rowNumber= arr.length;
 		int columnNumber= arr[0].length;
+		boolean check=false;
 		for(int r=rowNumber-1;r>4;r--) {
 			for(int c=0;c<columnNumber-4;c++) {
 				if(arr[r][c].equals("X") && arr[r-1][c+1].equals("X") && arr[r-2][c+2].equals("X") && arr[r-3][c+3].equals("X") && arr[r-4][c+4].equals("X")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player X win ");
+					check=true;
+					break;
 				}else if(arr[r][c].equals("O") && arr[r-1][c+1].equals("O") && arr[r-2][c+2].equals("O") && arr[r-3][c+3].equals("O") && arr[r-4][c+4].equals("O")) {
 					JOptionPane.showMessageDialog(new JFrame("Winner"), "Player O win ");
+					check=true;
+					break;
 				}
 			}
 		}
+		return check;
 	}
+	
+	public static void clearScreen(DefaultTableModel model, String[][] checkArr ) {
+		for(int r=0;r<model.getRowCount();r++) {
+			for(int c=0;c<model.getColumnCount();c++) {
+				model.setValueAt("", r, c);
+			}
+		}
+		for(int r=0;r<checkArr.length;r++) {
+			for(int c=0;c<checkArr[0].length;c++) {
+				checkArr[r][c]="";
+			}
+		}
+	}
+	
+	public static void XMove(DefaultTableModel model, String[][] checkArr){
+		int selectedColumn= table.getSelectedColumn();
+		int selectedRow= table.getSelectedRow();
+		Movecheck(checkArr, selectedRow, selectedColumn);
+		checkArr[selectedRow][selectedColumn]="X";
+		model.setValueAt("X", selectedRow,selectedColumn);
+	}
+	
+	public static void OMove(DefaultTableModel model, String[][] checkArr){
+		int selectedColumn= table.getSelectedColumn();
+		int selectedRow= table.getSelectedRow();
+		Movecheck(checkArr, selectedRow, selectedColumn);
+		checkArr[selectedRow][selectedColumn]="O";
+		model.setValueAt("O", selectedRow,selectedColumn);
+	}
+		
+	public static void anotherRound(JFrame frame,DefaultTableModel model, String[][] checkArr, JRadioButton XTurn, JRadioButton OTurn) {
+		if(horizonCheck(checkArr) | verticalCheck(checkArr) | diagonalCheck1(checkArr) | diagonalCheck2(checkArr)) {
+			int newGameDecision = JOptionPane.showConfirmDialog(frame, "Do you want to play another round ", "Question", JOptionPane.YES_NO_OPTION);
+			if(newGameDecision==JOptionPane.YES_OPTION) {
+				Object[] XOoption= {"X","O"};
+				int XOChose = JOptionPane.showOptionDialog(frame, "Which one start first X or O ?: ","Question",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE,null,XOoption,null);
+				JOptionPane.showMessageDialog(frame,("Let the game beginn !!"));
+				table.setVisible(true);
+				if(XOChose==0) {				
+					XTurn.setSelected(true);
+				} else {
+					OTurn.setSelected(true);
+				}
+				clearScreen(model, checkArr);
+			}
+			else if (newGameDecision == JOptionPane.NO_OPTION) {
+				System.exit(0);
+			}
+		}
+	}
+	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Tic-Tac-Toe");
+		String[][] checkArr= new String[26][80];
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1038,553);
@@ -83,7 +163,7 @@ public class tictactoe {
 		frame.getContentPane().setLayout(springLayout);
 		
 		table = new JTable();
-		table.setBorder(new LineBorder(Color.ORANGE, 2));
+		table.setBorder(new LineBorder(Color.BLACK, 2));
 		springLayout.putConstraint(SpringLayout.SOUTH, table, 426, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, table, 998, SpringLayout.WEST, frame.getContentPane());
 		table.setModel(new DefaultTableModel(
@@ -131,19 +211,14 @@ public class tictactoe {
 		table.getColumnModel().getColumn(2).setResizable(false);
 		table.getColumnModel().getColumn(3).setResizable(false);
 		table.getColumnModel().getColumn(4).setResizable(false);
-		String[][] checkArr= new String[26][80];
-		for(int row=0; row<26;row++) {
-			for(int column=0; column<80;column++) {
-				checkArr[row][column]="";
-			}
-		}
+		
 		springLayout.putConstraint(SpringLayout.NORTH, table, 10, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, table, 10, SpringLayout.WEST, frame.getContentPane());
 		frame.getContentPane().add(table);
 		table.setVisible(false);
 		
 		JRadioButton XTurn = new JRadioButton("X turn");
-		springLayout.putConstraint(SpringLayout.NORTH, XTurn, 6, SpringLayout.SOUTH, table);
+		springLayout.putConstraint(SpringLayout.NORTH, XTurn, 432, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, XTurn, 907, SpringLayout.WEST, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, XTurn, -10, SpringLayout.SOUTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, XTurn, -7, SpringLayout.EAST, frame.getContentPane());
@@ -151,7 +226,7 @@ public class tictactoe {
 		XTurn.setVisible(false);
 		
 		JRadioButton OTurn = new JRadioButton("O Turn");
-		springLayout.putConstraint(SpringLayout.NORTH, OTurn, 16, SpringLayout.SOUTH, table);
+		springLayout.putConstraint(SpringLayout.NORTH, OTurn, 442, SpringLayout.NORTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.WEST, OTurn, 10, SpringLayout.WEST, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, OTurn, 0, SpringLayout.SOUTH, frame.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, OTurn, -909, SpringLayout.EAST, frame.getContentPane());
@@ -166,9 +241,7 @@ public class tictactoe {
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Object[] option= {"X","O"};
-				JOptionPane.showInputDialog("Player 1: ");
-				int XOChose = JOptionPane.showOptionDialog(frame, "Do you want to play X or O ?: ","Question",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE,null,option,null);
-				JOptionPane.showInputDialog("Player 2: ");
+				int XOChose = JOptionPane.showOptionDialog(frame, "Which one start first X or O ?: ","Question",JOptionPane.YES_NO_OPTION,JOptionPane.PLAIN_MESSAGE,null,option,null);
 				JOptionPane.showMessageDialog(frame,("Let the game beginn !!"));
 				table.setVisible(true);
 				if(XOChose==0) {				
@@ -179,22 +252,23 @@ public class tictactoe {
 			};
 		});
 		frame.getContentPane().add(startButton);
-		
 		JButton resetButton = new JButton("Reset game");
 		resetButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model= (DefaultTableModel) table.getModel();
-				for(int r=0;r<model.getRowCount();r++) {
-					for(int c=0;c<model.getColumnCount();c++) {
-						model.setValueAt("", r, c);
-					}
-				}
+				clearScreen(model,checkArr);
 			}
 		});
 		springLayout.putConstraint(SpringLayout.NORTH, resetButton, 0, SpringLayout.NORTH, OTurn);
 		springLayout.putConstraint(SpringLayout.WEST, resetButton, 144, SpringLayout.EAST, startButton);
 		springLayout.putConstraint(SpringLayout.SOUTH, resetButton, 0, SpringLayout.SOUTH, XTurn);
 		frame.getContentPane().add(resetButton);
+		
+		for(int row=0; row<26;row++) {
+			for(int column=0; column<80;column++) {
+				checkArr[row][column]="";
+			}
+		}
 		
 		JButton btnNewButton = new JButton("End turn");
 		springLayout.putConstraint(SpringLayout.EAST, resetButton, -122, SpringLayout.WEST, btnNewButton);
@@ -205,29 +279,17 @@ public class tictactoe {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel model= (DefaultTableModel) table.getModel();
-				int selectedColumn= table.getSelectedColumn();
-				int selectedRow= table.getSelectedRow();
 				try {
 					if(XTurn.isSelected()) {
-						Movecheck(checkArr, selectedRow, selectedColumn);
-						checkArr[selectedRow][selectedColumn]="X";
-						model.setValueAt("X", selectedRow,selectedColumn);
+						XMove(model,checkArr);
 						OTurn.setSelected(true);
 						XTurn.setSelected(false);
-						horizonCheck(checkArr);
-						verticalCheck(checkArr);
-						diagonalCheck1(checkArr);
-						diagonalCheck2(checkArr);
+						anotherRound(frame, model, checkArr, XTurn, OTurn);
 					}else if(OTurn.isSelected()) {
-						Movecheck(checkArr, selectedRow, selectedColumn);
-						checkArr[selectedRow][selectedColumn]="O";
-						model.setValueAt("O", selectedRow,selectedColumn);
+						OMove(model, checkArr);
 						XTurn.setSelected(true);
 						OTurn.setSelected(false);
-						horizonCheck(checkArr);
-						verticalCheck(checkArr);
-						diagonalCheck1(checkArr);	
-						diagonalCheck2(checkArr);
+						anotherRound(frame, model, checkArr, XTurn, OTurn);
 					}
 				}catch(MoveException ex) {
 					JOptionPane.showMessageDialog(frame, ex.message);
